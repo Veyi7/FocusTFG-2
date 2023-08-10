@@ -31,8 +31,8 @@ public class TaskService {
                 task.setId(rs.getInt("id"));
                 task.setTitle(rs.getString("title"));
                 task.setDescription(rs.getString("description"));
-                task.setStartDateTime(rs.getTimestamp("start_date_time"));
-                task.setCreationDateTime(rs.getTimestamp("creation_date_time"));
+                task.setStartDateTime(rs.getTimestamp("start_date_time").toString());
+                task.setCreationDateTime(rs.getTimestamp("creation_date_time").toString());
                 task.setDone(rs.getBoolean("done"));
                 task.setUserid(rs.getInt("user_id"));
                 List<MiniTask> minis = new ArrayList<>();
@@ -70,8 +70,8 @@ public class TaskService {
                 task.setId(rs.getInt("id"));
                 task.setTitle(rs.getString("title"));
                 task.setDescription(rs.getString("description"));
-                task.setStartDateTime(rs.getTimestamp("start_date_time"));
-                task.setCreationDateTime(rs.getTimestamp("creation_date_time"));
+                task.setStartDateTime(rs.getTimestamp("start_date_time").toString());
+                task.setCreationDateTime(rs.getTimestamp("creation_date_time").toString());
                 task.setDone(rs.getBoolean("done"));
                 task.setUserid(rs.getInt("user_id"));
                 List<MiniTask> minis = new ArrayList<>();
@@ -103,18 +103,8 @@ public class TaskService {
     public void createTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, done, user_id) values ("+task.getTitle()+","+task.getDescription()+","+task.getStartDateTime()+","+task.getCreationDateTime()+","+false+","+0+")")) {
-            if (!task.getMiniTasks().isEmpty()) {
-                List<MiniTask> list = task.getMiniTasks();
-                for (int i = 0; i < list.size(); ++i) {
-                    try (Connection conn2 = DriverManager.getConnection(url, user, password);
-                         Statement stmt2 = conn2.createStatement();
-                         ResultSet rs2 = stmt2.executeQuery("insert into minitasks(title, taskid) values ("+ list.get(i).getTitle() +"," + rs.getInt("id") + ")")) {
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
+             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"',"+234+") returning id")) {
+
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -124,18 +114,7 @@ public class TaskService {
     public void updateTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("update tasks set title = "+ task.getTitle() +", description = "+task.getDescription()+", start_date_time = "+task.getStartDateTime()+", done = "+task.isDone()+" where id = "+task.getId()+";")) {
-            if (!task.getMiniTasks().isEmpty()) {
-                List<MiniTask> list = task.getMiniTasks();
-                for (int i = 0; i < list.size(); ++i) {
-                    try (Connection conn2 = DriverManager.getConnection(url, user, password);
-                         Statement stmt2 = conn2.createStatement();
-                         ResultSet rs2 = stmt2.executeQuery("update minitasks set title = "+list.get(i).getTitle()+", done = "+list.get(i).isDone()+" where id = "+ list.get(i).getId() + ";")) {
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
+             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = '"+task.getStartDateTime()+"', done = "+task.isDone()+" where id = "+task.getId()+" returning id;")) {
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -145,15 +124,34 @@ public class TaskService {
     public void deleteTask(int id) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("delete from minitasks where taskid ="+id+";")) {
+             ResultSet rs = stmt.executeQuery("delete from minitasks where taskid ="+id+" returning id;")) {
             try (Connection conn2 = DriverManager.getConnection(url, user, password);
                  Statement stmt2 = conn2.createStatement();
-                 ResultSet rs2 = stmt2.executeQuery("delete from tasks where id ="+id+";")) {
+                 ResultSet rs2 = stmt2.executeQuery("delete from tasks where id ="+id+" returning id;")) {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         }
         catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void createMiniTask(MiniTask miniTask) {
+        try (Connection conn2 = DriverManager.getConnection(url, user, password);
+             Statement stmt2 = conn2.createStatement();
+             ResultSet rs2 = stmt2.executeQuery("insert into minitasks(title, taskid) values ('" + miniTask.getTitle() + "'," + miniTask.getTaskId() + ") returning id")) {
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void updateMiniTask(MiniTask mt) {
+        try (Connection conn2 = DriverManager.getConnection(url, user, password);
+             Statement stmt2 = conn2.createStatement();
+             ResultSet rs2 = stmt2.executeQuery("update minitasks set title = '" + mt.getTitle() + "', done = " + mt.isDone() + " where id = " + mt.getId() + " returning id;")) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

@@ -8,8 +8,8 @@ public class Task {
     private int id;
     private String title;
     private String description;
-    private Timestamp startDateTime;
-    private Timestamp creationDateTime;
+    private String startDateTime;
+    private String creationDateTime;
     private boolean done;
     private int userid;
 
@@ -39,19 +39,19 @@ public class Task {
         this.description = description;
     }
 
-    public Timestamp getStartDateTime() {
+    public String getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Timestamp startDateTime) {
+    public void setStartDateTime(String startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Timestamp getCreationDateTime() {
+    public String getCreationDateTime() {
         return creationDateTime;
     }
 
-    public void setCreationDateTime(Timestamp creationDateTime) {
+    public void setCreationDateTime(String creationDateTime) {
         this.creationDateTime = creationDateTime;
     }
 
