@@ -4,19 +4,17 @@ import org.focus.api.model.MiniTask;
 import org.focus.api.model.Task;
 import org.focus.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.spel.ast.Literal;
+
 import org.springframework.web.bind.annotation.*;
 
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.sql.Timestamp;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class TaskController {
 
