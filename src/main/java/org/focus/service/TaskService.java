@@ -100,11 +100,13 @@ public class TaskService {
         return tasks;
     }
 
-    public void createTask(Task task) {
+    public int createTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"',"+234+") returning id")) {
-
+             rs.next();
+             int id = rs.getInt("id");
+             return id;
         }
         catch (SQLException e) {
             throw new RuntimeException(e);

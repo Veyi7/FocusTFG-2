@@ -2,11 +2,13 @@ package org.focus.api.controller;
 
 import org.focus.api.model.MiniTask;
 import org.focus.api.model.Task;
+import org.focus.api.model.TaskResponse;
 import org.focus.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 
 import java.time.LocalDateTime;
@@ -35,7 +37,7 @@ public class TaskController {
     }
 
     @PostMapping("/task/new")
-    public void createTask(@RequestParam String title, String description, String data) {
+    public ResponseEntity<TaskResponse> createTask(@RequestParam String title, String description, String data) {
         Task task = new Task();
         task.setTitle(title);
         task.setDescription(description);
@@ -52,7 +54,10 @@ public class TaskController {
         System.out.println(data);
         task.setStartDateTime(data);
 
-        taskService.createTask(task);
+        int id = taskService.createTask(task);
+        //System.out.println(id);
+        TaskResponse responseTask = new TaskResponse(id, "Task created");
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseTask);
     }
 
     @PostMapping("/task/new/minitask")
@@ -82,7 +87,7 @@ public class TaskController {
     }
 
     @PostMapping("/task/update/minitask")
-    public void updateMiniTask(@RequestParam Integer id, String title, Boolean done){
+    public void updateMiniTask(@RequestParam Integer id, String title, Boolean done) {
         MiniTask mt = new MiniTask();
         mt.setTitle(title);
         mt.setId(id);
