@@ -36,8 +36,13 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("/task/user")
+    public List<Task> getAllTasksUser(@RequestParam String user_id) {
+        return taskService.getAllTasksUser(user_id);
+    }
+
     @PostMapping("/task/new")
-    public ResponseEntity<TaskResponse> createTask(@RequestParam String title, String description, String data) {
+    public ResponseEntity<TaskResponse> createTask(@RequestParam String title, String description, String data, String user_id) {
         Task task = new Task();
         task.setTitle(title);
         task.setDescription(description);
@@ -53,6 +58,10 @@ public class TaskController {
 
         System.out.println(data);
         task.setStartDateTime(data);
+
+        //User_id
+
+        task.setUserid(user_id);
 
         int id = taskService.createTask(task);
         //System.out.println(id);

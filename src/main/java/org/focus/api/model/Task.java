@@ -11,7 +11,7 @@ public class Task {
     private String startDateTime;
     private String creationDateTime;
     private boolean done;
-    private int userid;
+    private String userid;
 
     private List<MiniTask> miniTasks;
 
@@ -71,11 +71,11 @@ public class Task {
         this.miniTasks = miniTasks;
     }
 
-    public int getUserid() {
+    public String getUserid() {
         return userid;
     }
 
-    public void setUserid(int userid) {
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 

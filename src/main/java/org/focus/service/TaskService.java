@@ -34,7 +34,7 @@ public class TaskService {
                 task.setStartDateTime(rs.getTimestamp("start_date_time").toString());
                 task.setCreationDateTime(rs.getTimestamp("creation_date_time").toString());
                 task.setDone(rs.getBoolean("done"));
-                task.setUserid(rs.getInt("user_id"));
+                task.setUserid(rs.getString("user_id"));
                 List<MiniTask> minis = new ArrayList<>();
                 try (Connection conn2 = DriverManager.getConnection(url, user, password);
                      Statement stmt2 = conn2.createStatement();
@@ -73,7 +73,47 @@ public class TaskService {
                 task.setStartDateTime(rs.getTimestamp("start_date_time").toString());
                 task.setCreationDateTime(rs.getTimestamp("creation_date_time").toString());
                 task.setDone(rs.getBoolean("done"));
-                task.setUserid(rs.getInt("user_id"));
+                task.setUserid(rs.getString("user_id"));
+                List<MiniTask> minis = new ArrayList<>();
+                try (Connection conn2 = DriverManager.getConnection(url, user, password);
+                     Statement stmt2 = conn2.createStatement();
+                     ResultSet rs2 = stmt2.executeQuery("SELECT * FROM minitasks WHERE taskid = " + task.getId())) {
+                    while (rs2.next()) {
+                        MiniTask mini = new MiniTask();
+                        mini.setId(rs2.getInt("id"));
+                        mini.setTitle(rs2.getString("title"));
+                        mini.setDone(rs2.getBoolean("done"));
+                        mini.setTaskId(rs2.getInt("taskId"));
+                        minis.add(mini);
+                    }
+                }
+                catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                task.setMiniTasks(minis);
+                tasks.add(task);
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return tasks;
+    }
+
+    public List<Task> getAllTasksUser(String userid) {
+        List<Task> tasks = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT * FROM tasks WHERE user_id = '"+userid+"'")) {
+            while (rs.next()) {
+                Task task = new Task();
+                task.setId(rs.getInt("id"));
+                task.setTitle(rs.getString("title"));
+                task.setDescription(rs.getString("description"));
+                task.setStartDateTime(rs.getTimestamp("start_date_time").toString());
+                task.setCreationDateTime(rs.getTimestamp("creation_date_time").toString());
+                task.setDone(rs.getBoolean("done"));
+                task.setUserid(rs.getString("user_id"));
                 List<MiniTask> minis = new ArrayList<>();
                 try (Connection conn2 = DriverManager.getConnection(url, user, password);
                      Statement stmt2 = conn2.createStatement();
@@ -103,7 +143,7 @@ public class TaskService {
     public int createTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"',"+234+") returning id")) {
+             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"','"+task.getUserid()+"') returning id")) {
              rs.next();
              int id = rs.getInt("id");
              return id;
