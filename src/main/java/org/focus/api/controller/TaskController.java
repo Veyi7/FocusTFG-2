@@ -11,12 +11,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.swing.text.DateFormatter;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.sql.Timestamp;
+import java.util.Locale;
+import java.util.TimeZone;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://192.168.1.90:3000"})
 @RestController
 public class TaskController {
 
@@ -50,14 +58,28 @@ public class TaskController {
         //Creation Time
 
         LocalDateTime hora = LocalDateTime.now();
+
         Timestamp timestamp = Timestamp.valueOf(hora);
-        System.out.println(timestamp.toString());
-        task.setCreationDateTime(timestamp.toString());
+
+        String time = (timestamp.toString()).substring(0,19);
+        System.out.println(time);
+        task.setCreationDateTime(time);
 
         //Time of the task
 
-        System.out.println(data);
-        task.setStartDateTime(data);
+        SimpleDateFormat formatoEntrada = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
+        formatoEntrada.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+        try {
+            Date aux = formatoEntrada.parse(data);
+            String aux2 = formatoSalida.format(aux);
+            System.out.println(aux2);
+            task.setStartDateTime(aux2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         //User_id
 
@@ -89,8 +111,21 @@ public class TaskController {
         task.setId(id);
         task.setTitle(title);
         task.setDescription(description);
-        task.setStartDateTime(date);
         task.setDone(done);
+
+        SimpleDateFormat formatoEntrada = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
+        formatoEntrada.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+        try {
+            Date aux = formatoEntrada.parse(date);
+            String aux2 = formatoSalida.format(aux);
+            System.out.println(aux2);
+            task.setStartDateTime(aux2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         taskService.updateTask(task);
     }
