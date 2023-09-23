@@ -175,14 +175,11 @@ public class TaskService {
     }
 
     public void updateTask(Task task) {
-        int bit = 0;
-        if (task.isDone()) {
-            bit = 1;
-        }
+
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
 
-             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = '"+task.getStartDateTime()+"', done = "+bit+" where id = "+task.getId()+";")) {
+             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = '"+task.getStartDateTime()+"', done = "+task.isDone()+" where id = "+task.getId()+";")) {
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -216,13 +213,9 @@ public class TaskService {
     }
 
     public void updateMiniTask(MiniTask mt) {
-        int bit = 0;
-        if (mt.isDone()) {
-            bit = 1;
-        }
         try (Connection conn2 = DriverManager.getConnection(url, user, password);
              Statement stmt2 = conn2.createStatement();
-             ResultSet rs2 = stmt2.executeQuery("update minitasks set title = '" + mt.getTitle() + "', done = " + bit + " where id = " + mt.getId() + ";")) {
+             ResultSet rs2 = stmt2.executeQuery("update minitasks set title = '" + mt.getTitle() + "', done = " + mt.isDone() + " where id = " + mt.getId() + ";")) {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
