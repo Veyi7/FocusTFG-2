@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    username: ${PROB_DB_USERNAME}
+    password: ${PROB_DB_PASSWORD}
+    name: Focus
+
+  sql:
+    init:
+      mode: always
