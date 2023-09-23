@@ -154,8 +154,13 @@ public class TaskService {
              List<Task> rs2 = getAllTasksUser(task.getUserid());
              int returnId = 0;
              for(int i = 0; i< rs2.size(); ++i) {
+                 System.out.println(task.getTitle());
+                 System.out.println(rs2.get(i).getTitle());
                  if (task.getTitle() == rs2.get(i).getTitle()) {
+                     System.out.println(task.getCreationDateTime());
+                     System.out.println(rs2.get(i).getCreationDateTime());
                      if (task.getCreationDateTime() == rs2.get(i).getCreationDateTime()) {
+                         System.out.println(rs2.get(i).getId());
                          returnId = rs2.get(i).getId();
                          return returnId;
 
