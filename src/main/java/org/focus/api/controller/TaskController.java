@@ -108,19 +108,9 @@ public class TaskController {
         task.setDescription(description);
         task.setDone(done);
 
-        SimpleDateFormat formatoEntrada = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
-        formatoEntrada.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //Time of the task
 
-
-        try {
-            Date aux = formatoEntrada.parse(date);
-            String aux2 = formatoSalida.format(aux);
-            System.out.println(aux2);
-            task.setStartDateTime(aux2);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        task.setStartDateTime(date);
 
         taskService.updateTask(task);
     }
