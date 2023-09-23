@@ -158,7 +158,7 @@ public class TaskService {
              if (rowsAffected>0) {
                  List<Task> rs2 = getAllTasksUser(task.getUserid());
                  int returnId = 0;
-                 for (int i = 0; i < rs2.size(); ++i) {
+                 for (int i = rs2.size(); i >= 0; --i) {
                      System.out.println(task.getTitle());
                      System.out.println(rs2.get(i).getTitle());
                      if (task.getTitle() == rs2.get(i).getTitle()) {
