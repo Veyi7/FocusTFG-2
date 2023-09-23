@@ -73,8 +73,16 @@ public class TaskController {
         task.setUserid(user_id);
 
         int id = taskService.createTask(task);
-        //System.out.println(id);
-        TaskResponse responseTask = new TaskResponse(id, "Task created");
+
+        TaskResponse responseTask;
+        if (id == 0) {
+            responseTask = new TaskResponse(id, "ERROR");
+        }
+        else {
+            System.out.println(id);
+            responseTask = new TaskResponse(id, "Task created");
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(responseTask);
     }
 
