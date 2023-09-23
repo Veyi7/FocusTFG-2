@@ -158,7 +158,7 @@ public class TaskService {
              if (rowsAffected>0) {
                  List<Task> rs2 = getAllTasksUser(task.getUserid());
                  int returnId = 0;
-                 for (int i = rs2.size(); i >= 0; --i) {
+                 for (int i = rs2.size()-1; i >= 0; --i) {
                      System.out.println("iteracion numero"+i);
                      if (task.getTitle() == rs2.get(i).getTitle()) {
                          System.out.println("pasa comparación de titulos");
