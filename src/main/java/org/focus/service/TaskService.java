@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 public class TaskService {
 
@@ -22,12 +23,13 @@ public class TaskService {
     //private String user = "postgres";
     //private String password = "FIB1234fib!";
 
-    private String url = "jdbc:sqlserver://mysqlserverfocus.database.windows.net:1433;databaseName=FocusTFGDB";
-    private String user = "azureuser@mysqlserverfocus";
-    private String password = "Pokemonmola7";
+    private String url = "jdbc://postgres://containers-us-west-143.railway.app:6311/railway";
+    private String user = "postgres";
+    private String password = "hxxEPWbYMw99VZFl4mjB";
 
     public Task getTask(Integer id) {
         Task task = new Task();
+
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM tasks WHERE id = "+ id)) {
@@ -147,7 +149,7 @@ public class TaskService {
     public int createTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) OUTPUT INSERTED.id values ('"+task.getTitle()+"','"+task.getDescription()+"',CONVERT(DATETIME,'"+task.getStartDateTime()+"', 120),CONVERT(DATETIME,'"+task.getCreationDateTime()+"', 120),'"+task.getUserid()+"')")) {
+             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"',CONVERT(DATETIME,'"+task.getStartDateTime()+"', 120),CONVERT(DATETIME,'"+task.getCreationDateTime()+"', 120),'"+task.getUserid()+"' return id)")) {
              rs.next();
              int id = rs.getInt("id");
              return id;
@@ -165,7 +167,7 @@ public class TaskService {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
 
-             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = CONVERT(DATETIME,'"+task.getStartDateTime()+"', 120), done = "+bit+" OUTPUT INSERTED.id where id = "+task.getId()+";")) {
+             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = CONVERT(DATETIME,'"+task.getStartDateTime()+"', 120), done = "+bit+" where id = "+task.getId()+" return id;")) {
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -175,10 +177,10 @@ public class TaskService {
     public void deleteTask(int id) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("delete from minitasks OUTPUT DELETED.id where taskid ="+id+";")) {
+             ResultSet rs = stmt.executeQuery("delete from minitasks where taskid ="+id+" return id;")) {
             try (Connection conn2 = DriverManager.getConnection(url, user, password);
                  Statement stmt2 = conn2.createStatement();
-                 ResultSet rs2 = stmt2.executeQuery("delete from tasks OUTPUT DELETED.id where id ="+id+";")) {
+                 ResultSet rs2 = stmt2.executeQuery("delete from tasks where id ="+id+" return id;")) {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -191,7 +193,7 @@ public class TaskService {
     public void createMiniTask(MiniTask miniTask) {
         try (Connection conn2 = DriverManager.getConnection(url, user, password);
              Statement stmt2 = conn2.createStatement();
-             ResultSet rs2 = stmt2.executeQuery("insert into minitasks(title, taskid) OUTPUT INSERTED.id values ('" + miniTask.getTitle() + "'," + miniTask.getTaskId() + ")")) {
+             ResultSet rs2 = stmt2.executeQuery("insert into minitasks(title, taskid) values ('" + miniTask.getTitle() + "'," + miniTask.getTaskId() + ") return id")) {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -205,7 +207,7 @@ public class TaskService {
         }
         try (Connection conn2 = DriverManager.getConnection(url, user, password);
              Statement stmt2 = conn2.createStatement();
-             ResultSet rs2 = stmt2.executeQuery("update minitasks set title = '" + mt.getTitle() + "', done = " + bit + " OUTPUT INSERTED.id where id = " + mt.getId() + ";")) {
+             ResultSet rs2 = stmt2.executeQuery("update minitasks set title = '" + mt.getTitle() + "', done = " + bit + " where id = " + mt.getId() + " return id;")) {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
