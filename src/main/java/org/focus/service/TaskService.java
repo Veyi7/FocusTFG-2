@@ -149,7 +149,7 @@ public class TaskService {
     public int createTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"',CONVERT(DATETIME,'"+task.getStartDateTime()+"', 120),CONVERT(DATETIME,'"+task.getCreationDateTime()+"', 120),'"+task.getUserid()+"' return id)")) {
+             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"','"+task.getUserid()+"' return id)")) {
              rs.next();
              int id = rs.getInt("id");
              return id;
@@ -167,7 +167,7 @@ public class TaskService {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
 
-             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = CONVERT(DATETIME,'"+task.getStartDateTime()+"', 120), done = "+bit+" where id = "+task.getId()+" return id;")) {
+             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = '"+task.getStartDateTime()+"', done = "+bit+" where id = "+task.getId()+" return id;")) {
         }
         catch (SQLException e) {
             throw new RuntimeException(e);

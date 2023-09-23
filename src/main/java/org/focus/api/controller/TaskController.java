@@ -61,25 +61,12 @@ public class TaskController {
 
         Timestamp timestamp = Timestamp.valueOf(hora);
 
-        String time = (timestamp.toString()).substring(0,19);
-        System.out.println(time);
-        task.setCreationDateTime(time);
+        System.out.println(timestamp.toString());
+        task.setCreationDateTime(timestamp.toString());
 
         //Time of the task
 
-        SimpleDateFormat formatoEntrada = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
-        formatoEntrada.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-
-        try {
-            Date aux = formatoEntrada.parse(data);
-            String aux2 = formatoSalida.format(aux);
-            System.out.println(aux2);
-            task.setStartDateTime(aux2);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        task.setStartDateTime(data);
 
         //User_id
 
