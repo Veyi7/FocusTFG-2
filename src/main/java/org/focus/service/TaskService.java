@@ -152,19 +152,17 @@ public class TaskService {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"','"+task.getUserid()+"')")) {
              List<Task> rs2 = getAllTasksUser(task.getUserid());
-             boolean end = true;
-             int i = 0;
-             int returnId;
-             while(end) {
+             int returnId = 0;
+             for(int i = 0; i< rs2.size(); ++i) {
                  if (task.getTitle() == rs2.get(i).getTitle()) {
                      if (task.getCreationDateTime() == rs2.get(i).getCreationDateTime()) {
                          returnId = rs2.get(i).getId();
                          return returnId;
+
                      }
                  }
-                 ++i;
              }
-             return 0;
+             return returnId;
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
