@@ -157,18 +157,8 @@ public class TaskService {
              int rowsAffected = ps.executeUpdate();
              if (rowsAffected>0) {
                  List<Task> rs2 = getAllTasksUser(task.getUserid());
-                 int returnId = 0;
-                 for (int i = rs2.size()-1; i >= 0; --i) {
-                     System.out.println("iteracion numero"+i);
-                     if (task.getTitle() == rs2.get(i).getTitle()) {
-                         System.out.println("pasa comparación de titulos");
-                         if (task.getCreationDateTime() == rs2.get(i).getCreationDateTime()) {
-                             System.out.println("pasa comparación de fechas");
-                             returnId = rs2.get(i).getId();
-                             return returnId;
-                         }
-                     }
-                 }
+                 int returnId = rs2.get(rs2.size()-1).getId();
+                 System.out.println(returnId);
                  return returnId;
              }
              else {
