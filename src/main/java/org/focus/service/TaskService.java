@@ -149,25 +149,34 @@ public class TaskService {
 
     public int createTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"','"+task.getUserid()+"')")) {
-             List<Task> rs2 = getAllTasksUser(task.getUserid());
-             int returnId = 0;
-             for(int i = 0; i< rs2.size(); ++i) {
-                 System.out.println(task.getTitle());
-                 System.out.println(rs2.get(i).getTitle());
-                 if (task.getTitle() == rs2.get(i).getTitle()) {
-                     System.out.println(task.getCreationDateTime());
-                     System.out.println(rs2.get(i).getCreationDateTime());
-                     if (task.getCreationDateTime() == rs2.get(i).getCreationDateTime()) {
-                         System.out.println(rs2.get(i).getId());
-                         returnId = rs2.get(i).getId();
-                         return returnId;
+             Statement stmt = conn.createStatement()) {
 
+             String sql = "insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"','"+task.getUserid()+"')";
+             PreparedStatement ps = conn.prepareStatement(sql);
+
+             int rowsAffected = ps.executeUpdate();
+             if (rowsAffected>0) {
+                 List<Task> rs2 = getAllTasksUser(task.getUserid());
+                 int returnId = 0;
+                 for (int i = 0; i < rs2.size(); ++i) {
+                     System.out.println(task.getTitle());
+                     System.out.println(rs2.get(i).getTitle());
+                     if (task.getTitle() == rs2.get(i).getTitle()) {
+                         System.out.println(task.getCreationDateTime());
+                         System.out.println(rs2.get(i).getCreationDateTime());
+                         if (task.getCreationDateTime() == rs2.get(i).getCreationDateTime()) {
+                             System.out.println(rs2.get(i).getId());
+                             returnId = rs2.get(i).getId();
+                             return returnId;
+
+                         }
                      }
                  }
+                 return returnId;
              }
-             return returnId;
+             else {
+                 return 0;
+             }
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -177,9 +186,13 @@ public class TaskService {
     public void updateTask(Task task) {
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
-             Statement stmt = conn.createStatement();
+             Statement stmt = conn.createStatement()) {
 
-             ResultSet rs = stmt.executeQuery("update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = '"+task.getStartDateTime()+"', done = "+task.isDone()+" where id = "+task.getId()+";")) {
+             String sql = "update tasks set title = '"+ task.getTitle() +"', description = '"+task.getDescription()+"', start_date_time = '"+task.getStartDateTime()+"', done = "+task.isDone()+" where id = "+task.getId()+";";
+             PreparedStatement ps = conn.prepareStatement(sql);
+
+             int rowsAffected = ps.executeUpdate();
+             System.out.println(rowsAffected);
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -188,11 +201,16 @@ public class TaskService {
 
     public void deleteTask(int id) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("delete from minitasks where taskid ="+id+";")) {
+             Statement stmt = conn.createStatement()) {
+             String sql = "delete from minitasks where taskid ="+id+";";
+             PreparedStatement ps = conn.prepareStatement(sql);
+             int rowsAffected = ps.executeUpdate();
+
             try (Connection conn2 = DriverManager.getConnection(url, user, password);
-                 Statement stmt2 = conn2.createStatement();
-                 ResultSet rs2 = stmt2.executeQuery("delete from tasks where id ="+id+";")) {
+                 Statement stmt2 = conn2.createStatement()) {
+                 String sql2 = "delete from tasks where id ="+id+";";
+                 PreparedStatement ps2 = conn.prepareStatement(sql2);
+                 int ra2 = ps2.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -204,8 +222,13 @@ public class TaskService {
 
     public void createMiniTask(MiniTask miniTask) {
         try (Connection conn2 = DriverManager.getConnection(url, user, password);
-             Statement stmt2 = conn2.createStatement();
-             ResultSet rs2 = stmt2.executeQuery("insert into minitasks(title, taskid) values ('" + miniTask.getTitle() + "'," + miniTask.getTaskId() + ")")) {
+             Statement stmt2 = conn2.createStatement()) {
+             String sql = "insert into minitasks(title, taskid) values ('" + miniTask.getTitle() + "'," + miniTask.getTaskId() + ")";
+             PreparedStatement ps = conn2.prepareStatement(sql);
+
+             int rowsAffected = ps.executeUpdate();
+             System.out.println(rowsAffected);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -214,8 +237,12 @@ public class TaskService {
 
     public void updateMiniTask(MiniTask mt) {
         try (Connection conn2 = DriverManager.getConnection(url, user, password);
-             Statement stmt2 = conn2.createStatement();
-             ResultSet rs2 = stmt2.executeQuery("update minitasks set title = '" + mt.getTitle() + "', done = " + mt.isDone() + " where id = " + mt.getId() + ";")) {
+             Statement stmt2 = conn2.createStatement()) {
+             String sql = "update minitasks set title = '" + mt.getTitle() + "', done = " + mt.isDone() + " where id = " + mt.getId() + ";";
+             PreparedStatement ps = conn2.prepareStatement(sql);
+
+             int rowsAffected = ps.executeUpdate();
+             System.out.println(rowsAffected);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
