@@ -23,7 +23,7 @@ public class TaskService {
     //private String user = "postgres";
     //private String password = "FIB1234fib!";
 
-    private String url = "jdbc://postgres://containers-us-west-143.railway.app:6311/railway";
+    private String url = "jdbc:postgres://containers-us-west-143.railway.app:6311/railway";
     private String user = "postgres";
     private String password = "hxxEPWbYMw99VZFl4mjB";
 
