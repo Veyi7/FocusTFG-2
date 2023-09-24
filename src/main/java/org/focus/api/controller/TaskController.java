@@ -24,7 +24,7 @@ import java.sql.Timestamp;
 import java.util.Locale;
 import java.util.TimeZone;
 
-@CrossOrigin(origins = {"http://192.168.1.90:3000"})
+@CrossOrigin(origins = {"https://focusapp-c58cf.web.app"})
 @RestController
 public class TaskController {
 
