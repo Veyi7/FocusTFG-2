@@ -102,7 +102,7 @@ public class TaskController {
     }
 
     @PostMapping("/task/update")
-    public void updateTask(@RequestParam Integer id, String title, String description, String date, Boolean done){
+    public TaskResponse updateTask(@RequestParam Integer id, String title, String description, String date, Boolean done){
         Task task = new Task();
         task.setId(id);
         task.setTitle(title);
@@ -113,17 +113,35 @@ public class TaskController {
 
         task.setStartDateTime(date);
 
-        taskService.updateTask(task);
+        int ra = taskService.updateTask(task);
+        TaskResponse rt;
+        if (ra>0) {
+            rt = new TaskResponse(ra, "Task Erased");
+        }
+        else {
+            rt = new TaskResponse(0, "ERROR");
+        }
+
+        return rt;
     }
 
     @PostMapping("/task/update/minitask")
-    public void updateMiniTask(@RequestParam Integer id, String title, Boolean done) {
+    public TaskResponse updateMiniTask(@RequestParam Integer id, String title, Boolean done) {
         MiniTask mt = new MiniTask();
         mt.setTitle(title);
         mt.setId(id);
         mt.setDone(done);
 
-        taskService.updateMiniTask(mt);
+        int ra = taskService.updateMiniTask(mt);
+        TaskResponse rt;
+        if (ra>0) {
+            rt = new TaskResponse(ra, "Task Erased");
+        }
+        else {
+            rt = new TaskResponse(0, "ERROR");
+        }
+
+        return rt;
     }
 
     @GetMapping("/test")

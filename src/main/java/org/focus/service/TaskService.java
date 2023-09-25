@@ -158,7 +158,6 @@ public class TaskService {
              if (rowsAffected>0) {
                  List<Task> rs2 = getAllTasksUser(task.getUserid());
                  int returnId = rs2.get(rs2.size()-1).getId();
-                 System.out.println(returnId);
                  return returnId;
              }
              else {
@@ -170,7 +169,7 @@ public class TaskService {
         }
     }
 
-    public void updateTask(Task task) {
+    public int updateTask(Task task) {
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement()) {
@@ -179,7 +178,7 @@ public class TaskService {
              PreparedStatement ps = conn.prepareStatement(sql);
 
              int rowsAffected = ps.executeUpdate();
-             System.out.println(rowsAffected);
+             return rowsAffected;
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -214,7 +213,6 @@ public class TaskService {
              PreparedStatement ps = conn2.prepareStatement(sql);
 
              int rowsAffected = ps.executeUpdate();
-             System.out.println(rowsAffected);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -222,14 +220,14 @@ public class TaskService {
 
     }
 
-    public void updateMiniTask(MiniTask mt) {
+    public int updateMiniTask(MiniTask mt) {
         try (Connection conn2 = DriverManager.getConnection(url, user, password);
              Statement stmt2 = conn2.createStatement()) {
              String sql = "update minitasks set title = '" + mt.getTitle() + "', done = " + mt.isDone() + " where id = " + mt.getId() + ";";
              PreparedStatement ps = conn2.prepareStatement(sql);
 
              int rowsAffected = ps.executeUpdate();
-             System.out.println(rowsAffected);
+             return rowsAffected;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
