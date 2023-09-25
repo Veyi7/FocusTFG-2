@@ -186,18 +186,18 @@ public class TaskService {
         }
     }
 
-    public void deleteTask(int id) {
+    public int deleteTask(int id) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement()) {
              String sql = "delete from minitasks where taskid ="+id+";";
              PreparedStatement ps = conn.prepareStatement(sql);
              int rowsAffected = ps.executeUpdate();
-
             try (Connection conn2 = DriverManager.getConnection(url, user, password);
                  Statement stmt2 = conn2.createStatement()) {
                  String sql2 = "delete from tasks where id ="+id+";";
                  PreparedStatement ps2 = conn.prepareStatement(sql2);
                  int ra2 = ps2.executeUpdate();
+                 return ra2;
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

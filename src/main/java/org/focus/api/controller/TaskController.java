@@ -11,18 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.swing.text.DateFormatter;
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.sql.Timestamp;
-import java.util.Locale;
-import java.util.TimeZone;
 
 @CrossOrigin(origins = {"https://focusapp-c58cf.web.app"})
 @RestController
@@ -96,8 +88,17 @@ public class TaskController {
     }
 
     @DeleteMapping("/task/delete")
-    public void deleteTask(@RequestParam Integer id){
-        taskService.deleteTask(id);
+    public TaskResponse deleteTask(@RequestParam Integer id) {
+        int ra = taskService.deleteTask(id);
+        TaskResponse rt;
+        if (ra>0) {
+            rt = new TaskResponse(ra, "Task Erased");
+        }
+        else {
+            rt = new TaskResponse(0, "ERROR");
+        }
+
+        return rt;
     }
 
     @PostMapping("/task/update")
