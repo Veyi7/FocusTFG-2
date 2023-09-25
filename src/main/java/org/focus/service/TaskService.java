@@ -206,13 +206,14 @@ public class TaskService {
         }
     }
 
-    public void createMiniTask(MiniTask miniTask) {
+    public int createMiniTask(MiniTask miniTask) {
         try (Connection conn2 = DriverManager.getConnection(url, user, password);
              Statement stmt2 = conn2.createStatement()) {
              String sql = "insert into minitasks(title, taskid) values ('" + miniTask.getTitle() + "'," + miniTask.getTaskId() + ")";
              PreparedStatement ps = conn2.prepareStatement(sql);
 
              int rowsAffected = ps.executeUpdate();
+             return rowsAffected;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

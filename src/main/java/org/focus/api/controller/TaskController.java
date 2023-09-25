@@ -79,12 +79,22 @@ public class TaskController {
     }
 
     @PostMapping("/task/new/minitask")
-    public void createMiniTask(@RequestParam Integer id, String title) {
+    public ResponseEntity<TaskResponse> createMiniTask(@RequestParam Integer id, String title) {
         MiniTask miniTask = new MiniTask();
         miniTask.setTitle(title);
         miniTask.setTaskId(id);
 
-        taskService.createMiniTask(miniTask);
+        int ra = taskService.createMiniTask(miniTask);
+        TaskResponse responseTask;
+        if (ra == 0) {
+            responseTask = new TaskResponse(0, "ERROR");
+        }
+        else {
+            System.out.println(id);
+            responseTask = new TaskResponse(ra, "Task created");
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseTask);
     }
 
     @DeleteMapping("/task/delete")
