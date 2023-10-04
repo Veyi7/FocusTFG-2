@@ -26,7 +26,8 @@ public class TaskController {
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
-    @GetMapping("/task")
+
+    /* @GetMapping("/task")
     public Task getTask(@RequestParam Integer id){
         return taskService.getTask(id);
     }
@@ -34,7 +35,7 @@ public class TaskController {
     @GetMapping("/task/all")
     public List<Task> getAllTask(){
         return taskService.getAllTasks();
-    }
+    } */
 
     @GetMapping("/task/user")
     public List<Task> getAllTasksUser(@RequestParam String user_id) {
