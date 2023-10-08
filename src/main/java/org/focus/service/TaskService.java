@@ -5,6 +5,7 @@ import org.focus.api.model.Task;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,22 +148,30 @@ public class TaskService {
     }
 
 
+
     public int createTask(Task task) {
         try (Connection conn = DriverManager.getConnection(url, user, password);
-             Statement stmt = conn.createStatement()) {
-
-             String sql = "insert into tasks(title, description, start_date_time, creation_date_time, user_id) values ('"+task.getTitle()+"','"+task.getDescription()+"','"+task.getStartDateTime()+"','"+task.getCreationDateTime()+"','"+task.getUserid()+"')";
-             PreparedStatement ps = conn.prepareStatement(sql);
-
-             int rowsAffected = ps.executeUpdate();
-             if (rowsAffected>0) {
-                 List<Task> rs2 = getAllTasksUser(task.getUserid());
-                 int returnId = rs2.get(rs2.size()-1).getId();
-                 return returnId;
-             }
-             else {
-                 return 0;
-             }
+             PreparedStatement ps = conn.prepareStatement(
+                     "insert into tasks(title, description, start_date_time, creation_date_time, user_id) values (?, ?, ?, ?, ?) returning id"
+             )) {
+                ps.setString(1, task.getTitle());
+                ps.setString(2, task.getDescription());
+                ps.setTimestamp(3, Timestamp.valueOf(task.getStartDateTime()));
+                ps.setTimestamp(4, Timestamp.valueOf(task.getCreationDateTime()));
+                ps.setString(5, task.getUserid());
+                boolean hasResultSet = ps.execute();
+                if (!hasResultSet) {
+                    int rowsAffected = ps.getUpdateCount();
+                    System.out.println(rowsAffected);
+                } else {
+                    ResultSet resultSet = ps.getResultSet();
+                    if (resultSet.next()) {
+                        int id = resultSet.getInt("id");
+                        System.out.println(id);
+                        return id;
+                    }
+                }
+                return 0;
         }
         catch (SQLException e) {
             throw new RuntimeException(e);

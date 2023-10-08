@@ -1,8 +1,11 @@
 package org.focus.api.model;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
 
 public class Task {
     private int id;
@@ -78,5 +81,6 @@ public class Task {
     public void setUserid(String userid) {
         this.userid = userid;
     }
+
 
 }
