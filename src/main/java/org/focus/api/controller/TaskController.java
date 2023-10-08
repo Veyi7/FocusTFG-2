@@ -11,10 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
+import java.util.Date;
 import java.util.List;
 import java.sql.Timestamp;
+import java.util.TimeZone;
 
 @CrossOrigin(origins = {"https://focusapp-c58cf.web.app"})
 @RestController
@@ -58,8 +63,16 @@ public class TaskController {
         task.setCreationDateTime(timestamp.toString());
 
         //Time of the task
-
-        task.setStartDateTime(data);
+        SimpleDateFormat formato = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+        formato.setTimeZone(TimeZone.getTimeZone("GMT"));
+        try {
+            Date date = formato.parse(data);
+            Timestamp aux = new Timestamp(date.getTime());
+            System.out.println(aux.toString());
+            task.setStartDateTime(data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         //User_id
 
