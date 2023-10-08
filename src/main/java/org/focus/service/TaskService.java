@@ -156,8 +156,6 @@ public class TaskService {
              )) {
                 ps.setString(1, task.getTitle());
                 ps.setString(2, task.getDescription());
-                System.out.println(task.getStartDateTime());
-                System.out.println(task.getCreationDateTime());
                 ps.setTimestamp(3, Timestamp.valueOf(task.getStartDateTime()));
                 ps.setTimestamp(4, Timestamp.valueOf(task.getCreationDateTime()));
                 ps.setString(5, task.getUserid());

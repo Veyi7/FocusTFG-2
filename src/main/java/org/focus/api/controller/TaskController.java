@@ -68,8 +68,7 @@ public class TaskController {
         try {
             Date date = formato.parse(data);
             Timestamp aux = new Timestamp(date.getTime());
-            System.out.println(aux.toString());
-            task.setStartDateTime(data);
+            task.setStartDateTime(aux.toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
